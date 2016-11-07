@@ -1,15 +1,250 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="https://cdn.mxpnl.com/libs/mixpanel-platform/css/reset.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.mxpnl.com/libs/mixpanel-platform/build/mixpanel-platform.v0.latest.min.css">
     <script src="https://cdn.mxpnl.com/libs/mixpanel-platform/build/mixpanel-platform.v0.latest.min.js"></script>
-  </head>
-  <body class="mixpanel-platform-body">
-    <h1>Hello, World!</h1>
+    <!-- AM Charts Resources -->
+    <script src="https://www.amcharts.com/lib/3/ammap.js"></script>
+    <script src="https://www.amcharts.com/lib/3/maps/js/usaLow.js"></script>
+    <script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
+    <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
+    <script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+</head>
+
+<body class="mixpanel-platform-body">
+    <h1><center>Total Number of Actions by State</center></h1>
+    <h2><center>From 1 day ago until <em>now</em></center></h2>
+    <br/>
+    <br/>
+    <br/>
     <script>
-      // Run queries and display results here
+    //init token
+    $(document).ready(function() {
+        MP.api.setCredentials('f5e930Q5cb230Q86bdaf45Q7dabdf16x')
+
+        //Query Data
+        var params = {
+            from: moment().subtract(1, 'days'),
+            to: moment(),
+            type: 'general', // analysis type for the data, can be 'general', 'unique', or 'average'
+            limit: 60, // maximum number of results to return
+            where: '(properties["mp_country_code"] == "US")'
+        };
+
+        MP.api.segment('Action', "$region", params).done(function(results) {
+            console.log('query 1 results:\n')
+            console.dir(results.values())
+            var defaultMap = "usaLow";
+
+
+            // states_hash =
+            //   {
+            //     'Alabama': 'AL',
+            //     'Alaska': 'AK',
+            //     'American Samoa': 'AS',
+            //     'Arizona': 'AZ',
+            //     'Arkansas': 'AR',
+            //     'California': 'CA',
+            //     'Colorado': 'CO',
+            //     'Connecticut': 'CT',
+            //     'Delaware': 'DE',
+            //     'District Of Columbia': 'DC',
+            //     'Federated States Of Micronesia': 'FM',
+            //     'Florida': 'FL',
+            //     'Georgia': 'GA',
+            //     'Guam': 'GU',
+            //     'Hawaii': 'HI',
+            //     'Idaho': 'ID',
+            //     'Illinois': 'IL',
+            //     'Indiana': 'IN',
+            //     'Iowa': 'IA',
+            //     'Kansas': 'KS',
+            //     'Kentucky': 'KY',
+            //     'Louisiana': 'LA',
+            //     'Maine': 'ME',
+            //     'Marshall Islands': 'MH',
+            //     'Maryland': 'MD',
+            //     'Massachusetts': 'MA',
+            //     'Michigan': 'MI',
+            //     'Minnesota': 'MN',
+            //     'Mississippi': 'MS',
+            //     'Missouri': 'MO',
+            //     'Montana': 'MT',
+            //     'Nebraska': 'NE',
+            //     'Nevada': 'NV',
+            //     'New Hampshire': 'NH',
+            //     'New Jersey': 'NJ',
+            //     'New Mexico': 'NM',
+            //     'New York': 'NY',
+            //     'North Carolina': 'NC',
+            //     'North Dakota': 'ND',
+            //     'Northern Mariana Islands': 'MP',
+            //     'Ohio': 'OH',
+            //     'Oklahoma': 'OK',
+            //     'Oregon': 'OR',
+            //     'Palau': 'PW',
+            //     'Pennsylvania': 'PA',
+            //     'Puerto Rico': 'PR',
+            //     'Rhode Island': 'RI',
+            //     'South Carolina': 'SC',
+            //     'South Dakota': 'SD',
+            //     'Tennessee': 'TN',
+            //     'Texas': 'TX',
+            //     'Utah': 'UT',
+            //     'Vermont': 'VT',
+            //     'Virgin Islands': 'VI',
+            //     'Virginia': 'VA',
+            //     'Washington': 'WA',
+            //     'West Virginia': 'WV',
+            //     'Wisconsin': 'WI',
+            //     'Wyoming': 'WY'
+            //   }
+
+            //   state_abbrev_hash =  {
+            //     'AL': 'Alabama',
+            //     'AK': 'Alaska',
+            //     'AS': 'American Samoa',
+            //     'AZ': 'Arizona',
+            //     'AR': 'Arkansas',
+            //     'CA': 'California',
+            //     'CO': 'Colorado',
+            //     'CT': 'Connecticut',
+            //     'DE': 'Delaware',
+            //     'DC': 'District Of Columbia',
+            //     'FM': 'Federated States Of Micronesia',
+            //     'FL': 'Florida',
+            //     'GA': 'Georgia',
+            //     'GU': 'Guam',
+            //     'HI': 'Hawaii',
+            //     'ID': 'Idaho',
+            //     'IL': 'Illinois',
+            //     'IN': 'Indiana',
+            //     'IA': 'Iowa',
+            //     'KS': 'Kansas',
+            //     'KY': 'Kentucky',
+            //     'LA': 'Louisiana',
+            //     'ME': 'Maine',
+            //     'MH': 'Marshall Islands',
+            //     'MD': 'Maryland',
+            //     'MA': 'Massachusetts',
+            //     'MI': 'Michigan',
+            //     'MN': 'Minnesota',
+            //     'MS': 'Mississippi',
+            //     'MO': 'Missouri',
+            //     'MT': 'Montana',
+            //     'NE': 'Nebraska',
+            //     'NV': 'Nevada',
+            //     'NH': 'New Hampshire',
+            //     'NJ': 'New Jersey',
+            //     'NM': 'New Mexico',
+            //     'NY': 'New York',
+            //     'NC': 'North Carolina',
+            //     'ND': 'North Dakota',
+            //     'MP': 'Northern Mariana Islands',
+            //     'OH': 'Ohio',
+            //     'OK': 'Oklahoma',
+            //     'OR': 'Oregon',
+            //     'PW': 'Palau',
+            //     'PA': 'Pennsylvania',
+            //     'PR': 'Puerto Rico',
+            //     'RI': 'Rhode Island',
+            //     'SC': 'South Carolina',
+            //     'SD': 'South Dakota',
+            //     'TN': 'Tennessee',
+            //     'TX': 'Texas',
+            //     'UT': 'Utah',
+            //     'VT': 'Vermont',
+            //     'VI': 'Virgin Islands',
+            //     'VA': 'Virginia',
+            //     'WA': 'Washington',
+            //     'WV': 'West Virginia',
+            //     'WI': 'Wisconsin',
+            //     'WY': 'Wyoming'
+            //   };
+
+
+            var map = AmCharts.makeChart("mapChartDiv", {
+                "type": "map",
+                "theme": "light",
+                "colorSteps": 10,
+                "dataProvider": {
+                    "map": "usaLow",
+                    "getAreasFromMap": true,
+                    "zoomLevel": 0.9,
+                    "areas": []
+                },
+                "areasSettings": {
+                    "autoZoom": true,
+                    "balloonText": "[[title]]: <strong>[[value]]</strong>"
+                },
+                "valueLegend": {
+                    "right": 10,
+                    "minValue": "little",
+                    "maxValue": "a lot!"
+                },
+                "zoomControl": {
+                    "minZoomLevel": 0.9
+                },
+                //"titles": titles,
+                "listeners": [{
+                    "event": "init",
+                    "method": updateHeatmap
+                }]
+            });
+
+
+            function updateHeatmap(event) {
+                var map = event.chart;
+                //debugger
+                _.each(map.dataProvider.areas, function(state, idx) {
+                    var stateData = MP.Data.inst(results.json[state.title]);
+
+                    map.dataProvider.areas[idx].value = stateData.sum().values()
+                })
+                map.dataGenerated = true;
+                map.validateNow();
+                //hide AM charts logo
+                $('a[title="Interactive JavaScript maps"]').css('display', 'none');
+                $('a[title="JavaScript charts"]').css('display', 'none')
+            }
+        });
+
+    })
     </script>
-  </body>
+    <!-- Styles -->
+    <style>
+    #mapChartDiv {
+        width: 100%;
+        height: 500px;
+    }
+    
+    h1 {
+        font-family: sans-serif;
+        font-size: x-large;
+        opacity: .7;
+    }
+    
+    h2 {
+        font-size: medium;
+        font-color: blue;
+        color: darkcyan;
+        opacity: .4;
+    }
+    </style>
+    <!-- Chart code -->
+    <!-- HTML -->
+    <div id="mapChartDiv"></div>
+    <br/>
+    <br/>
+    <br/>
+    <h1><center>What types of Apps are People Using?</center></h1>
+    <h2><center>From 1 day ago until <em>now</em></center></h2>
+    <br/>
+    <br/>
+    <br/>
+</body>
+
 </html>
