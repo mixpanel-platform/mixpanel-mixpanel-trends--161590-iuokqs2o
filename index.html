@@ -15,8 +15,8 @@
 </head>
 
 <body class="mixpanel-platform-body">
-    <h1><center>Total Number of Actions by State</center></h1>
-    <h2><center>Hour by Hour Totals, last 24 hours</center></h2>
+    <h1><center>AVERAGE Actions by State</center></h1>
+    <h2><center>Total actions over Unique Devices, 10AM - 10PM PST, today</center></h2>
     <br/>
     <br/>
     <br/>
@@ -25,14 +25,18 @@
     $(document).ready(function() {
         MP.api.setCredentials('f5e930Q5cb230Q86bdaf45Q7dabdf16x')
 
+        //get timeframe
+        var getTime = moment(moment().format());
+        var startTime = getTime._i.substr(0,11)+'10:00:00-08:00';
+        var endTime = startTime.replace('10', '20')
         //Query Data
         var params = {
             from: moment().subtract(1, 'days'),
             to: moment(),
-            type: 'general', // analysis type for the data, can be 'general', 'unique', or 'average'
+            type: 'average', // analysis type for the data, can be 'general', 'unique', or 'average'
             limit: 60, // maximum number of results to return
-            unit: 'hour',
-            where: '(properties["mp_country_code"] == "United States" or properties["mp_country_code"] == "US" or properties["mp_country_code"] == "us") and (properties["$region"] == "Alabama" or properties["$region"] == "Alaska" or properties["$region"] == "Arizona" or properties["$region"] == "Arkansas" or properties["$region"] == "California" or properties["$region"] == "Colorado" or properties["$region"] == "Connecticut" or properties["$region"] == "Delaware" or properties["$region"] == "Florida" or properties["$region"] == "Georgia" or properties["$region"] == "Hawaii" or properties["$region"] == "Idaho" or properties["$region"] == "Illinois" or properties["$region"] == "Indiana" or properties["$region"] == "Iowa" or properties["$region"] == "Kansas" or properties["$region"] == "Kentucky" or properties["$region"] == "Louisiana" or properties["$region"] == "Maine" or properties["$region"] == "Maryland" or properties["$region"] == "Massachusetts" or properties["$region"] == "Michigan" or properties["$region"] == "Minnesota" or properties["$region"] == "Mississippi" or properties["$region"] == "Missouri" or properties["$region"] == "Montana Nebraska" or properties["$region"] == "Nevada" or properties["$region"] == "New Hampshire" or properties["$region"] == "New Jersey" or properties["$region"] == "New Mexico" or properties["$region"] == "New York" or properties["$region"] == "North Carolina" or properties["$region"] == "North Dakota" or properties["$region"] == "Ohio" or properties["$region"] == "Oregon" or properties["$region"] == "Oklahoma" or properties["$region"] == "Pennsylvania" or properties["$region"] == "Rhode Island" or properties["$region"] == "South Carolina" or properties["$region"] == "South Dakota" or properties["$region"] == "Tennessee" or properties["$region"] == "Texas" or properties["$region"] == "Utah" or properties["$region"] == "Vermont" or properties["$region"] == "Virginia" or properties["$region"] == "Washington" or properties["$region"] == "West Virginia" or properties["$region"] == "Wisconsin" or properties["$region"] == "Wyoming" or  properties["$region"] == "District of Columbia")'
+            unit: 'day',
+            where: '(properties["mp_country_code"] == "United States" or properties["mp_country_code"] == "US" or properties["mp_country_code"] == "us") and (properties["$region"] == "Alabama" or properties["$region"] == "Alaska" or properties["$region"] == "Arizona" or properties["$region"] == "Arkansas" or properties["$region"] == "California" or properties["$region"] == "Colorado" or properties["$region"] == "Connecticut" or properties["$region"] == "Delaware" or properties["$region"] == "Florida" or properties["$region"] == "Georgia" or properties["$region"] == "Hawaii" or properties["$region"] == "Idaho" or properties["$region"] == "Illinois" or properties["$region"] == "Indiana" or properties["$region"] == "Iowa" or properties["$region"] == "Kansas" or properties["$region"] == "Kentucky" or properties["$region"] == "Louisiana" or properties["$region"] == "Maine" or properties["$region"] == "Maryland" or properties["$region"] == "Massachusetts" or properties["$region"] == "Michigan" or properties["$region"] == "Minnesota" or properties["$region"] == "Mississippi" or properties["$region"] == "Missouri" or properties["$region"] == "Montana" or properties["$region"] == "Nebraska" or properties["$region"] == "Nevada" or properties["$region"] == "New Hampshire" or properties["$region"] == "New Jersey" or properties["$region"] == "New Mexico" or properties["$region"] == "New York" or properties["$region"] == "North Carolina" or properties["$region"] == "North Dakota" or properties["$region"] == "Ohio" or properties["$region"] == "Oregon" or properties["$region"] == "Oklahoma" or properties["$region"] == "Pennsylvania" or properties["$region"] == "Rhode Island" or properties["$region"] == "South Carolina" or properties["$region"] == "South Dakota" or properties["$region"] == "Tennessee" or properties["$region"] == "Texas" or properties["$region"] == "Utah" or properties["$region"] == "Vermont" or properties["$region"] == "Virginia" or properties["$region"] == "Washington" or properties["$region"] == "West Virginia" or properties["$region"] == "Wisconsin" or properties["$region"] == "Wyoming" or  properties["$region"] == "District of Columbia")'
         };
 
         MP.api.segment('Action', "$region", params).done(function(results) {
@@ -175,7 +179,6 @@
             var map = AmCharts.makeChart("mapChartDiv", {
                 "type": "map",
                 "theme": "light",
-                "colorSteps": 10,
                 "dataProvider": {
                     "map": "usaLow",
                     "getAreasFromMap": true,
@@ -184,7 +187,10 @@
                 },
                 "areasSettings": {
                     "autoZoom": true,
-                    "balloonText": "[[title]]: <strong>[[value]]</strong>"
+                    "balloonText": "[[title]]: <strong>[[value]]</strong>",
+                    "colorSolid": "#ff0000",
+                    "color": "#ffffff",
+                    "colorSteps": 10
                 },
                 "valueLegend": {
                     "right": 10,
