@@ -16,7 +16,7 @@
 
 <body class="mixpanel-platform-body">
     <h1><center>AVERAGE Actions by State</center></h1>
-    <h2><center>Total actions over Unique Devices, 10AM - 10PM PST, today</center></h2>
+    <h2><center>Total actions over Unique Devices, Thanksgiving Day</center></h2>
     <br/>
     <br/>
     <br/>
@@ -27,11 +27,21 @@
 
         //get timeframe
         var getTime = moment(moment().format());
-        var startTime = getTime._i.substr(0,11)+'10:00:00-08:00';
+        var startTime = getTime._i.substr(0, 11) + '10:00:00-08:00';
         var endTime = startTime.replace('10', '20')
-        //Query Data
-        var params = {
-            from: moment().subtract(1, 'days'),
+            //Query Data
+        var params1 = {
+            from: '2016-11-22',
+            to: '2016-11-22',
+            type: 'average', // analysis type for the data, can be 'general', 'unique', or 'average'
+            limit: 60, // maximum number of results to return
+            unit: 'day',
+            where: '(properties["mp_country_code"] == "United States" or properties["mp_country_code"] == "US" or properties["mp_country_code"] == "us") and (properties["$region"] == "Alabama" or properties["$region"] == "Alaska" or properties["$region"] == "Arizona" or properties["$region"] == "Arkansas" or properties["$region"] == "California" or properties["$region"] == "Colorado" or properties["$region"] == "Connecticut" or properties["$region"] == "Delaware" or properties["$region"] == "Florida" or properties["$region"] == "Georgia" or properties["$region"] == "Hawaii" or properties["$region"] == "Idaho" or properties["$region"] == "Illinois" or properties["$region"] == "Indiana" or properties["$region"] == "Iowa" or properties["$region"] == "Kansas" or properties["$region"] == "Kentucky" or properties["$region"] == "Louisiana" or properties["$region"] == "Maine" or properties["$region"] == "Maryland" or properties["$region"] == "Massachusetts" or properties["$region"] == "Michigan" or properties["$region"] == "Minnesota" or properties["$region"] == "Mississippi" or properties["$region"] == "Missouri" or properties["$region"] == "Montana" or properties["$region"] == "Nebraska" or properties["$region"] == "Nevada" or properties["$region"] == "New Hampshire" or properties["$region"] == "New Jersey" or properties["$region"] == "New Mexico" or properties["$region"] == "New York" or properties["$region"] == "North Carolina" or properties["$region"] == "North Dakota" or properties["$region"] == "Ohio" or properties["$region"] == "Oregon" or properties["$region"] == "Oklahoma" or properties["$region"] == "Pennsylvania" or properties["$region"] == "Rhode Island" or properties["$region"] == "South Carolina" or properties["$region"] == "South Dakota" or properties["$region"] == "Tennessee" or properties["$region"] == "Texas" or properties["$region"] == "Utah" or properties["$region"] == "Vermont" or properties["$region"] == "Virginia" or properties["$region"] == "Washington" or properties["$region"] == "West Virginia" or properties["$region"] == "Wisconsin" or properties["$region"] == "Wyoming" or  properties["$region"] == "District of Columbia")'
+        };
+
+
+        var params2 = {
+            from: moment().subtract(3, 'days'),
             to: moment(),
             type: 'average', // analysis type for the data, can be 'general', 'unique', or 'average'
             limit: 60, // maximum number of results to return
@@ -39,17 +49,21 @@
             where: '(properties["mp_country_code"] == "United States" or properties["mp_country_code"] == "US" or properties["mp_country_code"] == "us") and (properties["$region"] == "Alabama" or properties["$region"] == "Alaska" or properties["$region"] == "Arizona" or properties["$region"] == "Arkansas" or properties["$region"] == "California" or properties["$region"] == "Colorado" or properties["$region"] == "Connecticut" or properties["$region"] == "Delaware" or properties["$region"] == "Florida" or properties["$region"] == "Georgia" or properties["$region"] == "Hawaii" or properties["$region"] == "Idaho" or properties["$region"] == "Illinois" or properties["$region"] == "Indiana" or properties["$region"] == "Iowa" or properties["$region"] == "Kansas" or properties["$region"] == "Kentucky" or properties["$region"] == "Louisiana" or properties["$region"] == "Maine" or properties["$region"] == "Maryland" or properties["$region"] == "Massachusetts" or properties["$region"] == "Michigan" or properties["$region"] == "Minnesota" or properties["$region"] == "Mississippi" or properties["$region"] == "Missouri" or properties["$region"] == "Montana" or properties["$region"] == "Nebraska" or properties["$region"] == "Nevada" or properties["$region"] == "New Hampshire" or properties["$region"] == "New Jersey" or properties["$region"] == "New Mexico" or properties["$region"] == "New York" or properties["$region"] == "North Carolina" or properties["$region"] == "North Dakota" or properties["$region"] == "Ohio" or properties["$region"] == "Oregon" or properties["$region"] == "Oklahoma" or properties["$region"] == "Pennsylvania" or properties["$region"] == "Rhode Island" or properties["$region"] == "South Carolina" or properties["$region"] == "South Dakota" or properties["$region"] == "Tennessee" or properties["$region"] == "Texas" or properties["$region"] == "Utah" or properties["$region"] == "Vermont" or properties["$region"] == "Virginia" or properties["$region"] == "Washington" or properties["$region"] == "West Virginia" or properties["$region"] == "Wisconsin" or properties["$region"] == "Wyoming" or  properties["$region"] == "District of Columbia")'
         };
 
-        MP.api.segment('Action', "$region", params).done(function(results) {
-            console.log('query 1 results:\n')
-            console.dir(results.values())
-            var defaultMap = "usaLow";
-            $('<div></div>').appendTo('#dataTable').MPTable({ // create table; try scrolling horizontally over demo below
+        // for table
+        MP.api.segment('Action', "$region", params2).done(function(results) {
+            $('<div></div>').appendTo('#dataTable').MPTable({
+                // create table; try scrolling horizontally over demo below
                 data: results,
                 showPercentages: true,
                 firstColHeader: 'Total Actions in Each State'
-            });
+            })
+        });
 
-
+        // for map
+        MP.api.segment('Action', "$region", params1).done(function(results) {
+            console.log('query 1 results:\n')
+            console.dir(results.values())
+            var defaultMap = "usaLow";
             // states_hash =
             //   {
             //     'Alabama': 'AL',
