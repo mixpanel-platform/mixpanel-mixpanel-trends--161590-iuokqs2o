@@ -15,8 +15,8 @@
 </head>
 
 <body class="mixpanel-platform-body">
-    <h1><center>AVERAGE Actions by State</center></h1>
-    <h2><center>Total actions over Unique Devices, Thanksgiving Day</center></h2>
+    <h1><center>Distracted Americans on Thanksgiving Day</center></h1>
+    <h2><center>Average actions per device</center></h2>
     <br/>
     <br/>
     <br/>
@@ -31,8 +31,8 @@
         var endTime = startTime.replace('10', '20')
             //Query Data
         var params1 = {
-            from: '2016-11-22',
-            to: '2016-11-22',
+            from: '2016-11-24',
+            to: '2016-11-24',
             type: 'average', // analysis type for the data, can be 'general', 'unique', or 'average'
             limit: 60, // maximum number of results to return
             unit: 'day',
@@ -41,8 +41,8 @@
 
 
         var params2 = {
-            from: moment().subtract(3, 'days'),
-            to: moment(),
+            from: '2016-11-23',
+            to: '2016-11-27',
             type: 'average', // analysis type for the data, can be 'general', 'unique', or 'average'
             limit: 60, // maximum number of results to return
             unit: 'day',
@@ -270,8 +270,6 @@
     <br/>
     <br/>
     <br/>
-    <h1><center>What types of Apps are People Using?</center></h1>
-    <h2><center>From 1 day ago until <em>now</em></center></h2>
     <br/>
     <br/>
     <br/>
